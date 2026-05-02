@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)file:///C:/Users/laure/Downloads/Commande_Mathieu_4.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Commande Mathieu</title>
+<link href="./Commande_Mathieu_files/css2" rel="stylesheet">
+<style>
+:root {
+  --rouge: #D42B2B;
+  --rouge-d: #A81E1E;
+  --rouge-l: #FDF0F0;
+  --gris: #2C2C2C;
+  --gris-l: #F5F5F5;
+  --gris-m: #E8E8E8;
+  --blanc: #FFFFFF;
+  --or: #C8A200;
+  --or-l: #FFF8DC;
+  --vert: #1A7A3A;
+  --vert-l: #EBF6F0;
+  --border: #DDDDDD;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --radius: 12px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'Barlow', sans-serif;
+  background: #EFEFEF;
+  color: var(--gris);
+  min-height: 100vh;
+  padding-bottom: 100px;
+}
+
+/* HEADER */
+.header {
+  background: var(--rouge);
+  padding: 16px 18px 14px;
+  position: sticky; top: 0; z-index: 200;
+  box-shadow: 0 3px 16px rgba(212,43,43,0.3);
+}
+.header-logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 26px; font-weight: 800;
+  color: #fff; letter-spacing: -0.5px; line-height: 1;
+}
+.header-logo span { color: rgba(255,255,255,0.55); font-weight: 600; font-size: 18px; }
+.header-sub { font-size: 11px; color: rgba(255,255,255,0.7); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }
+
+/* FAMILLE TABS */
+.fam-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 5px; padding: 10px 12px 8px;
+  background: #fff; border-bottom: 2px solid var(--gris-m);
+}
+.fam-btn {
+  border: 1.5px solid var(--border); border-radius: 16px;
+  padding: 7px 6px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px; font-weight: 700;
+  color: var(--gris); background: var(--blanc);
+  cursor: pointer; transition: all 0.15s;
+  text-align: center;
+}
+.fam-btn.active { background: var(--rouge); border-color: var(--rouge); color: #fff; box-shadow: 0 3px 10px rgba(212,43,43,0.3); }
+.fam-btn.has-data { border-color: var(--vert); color: var(--vert); }
+.fam-btn.active.has-data { background: var(--vert); border-color: var(--vert); color: #fff; }
+
+/* CONTENT */
+.content { padding: 10px 12px; }
+.fam-content { display: none; }
+.fam-content.active { display: block; }
+
+/* CARTE PRODUIT */
+.produits-card {
+  background: #fff; border-radius: var(--radius);
+  box-shadow: var(--shadow); margin-bottom: 12px;
+  overflow: hidden;
+}
+.produits-header {
+  background: var(--gris); padding: 10px 14px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px; font-weight: 700; color: #fff;
+}
+
+.produit-row {
+  display: flex; align-items: center;
+  padding: 10px 12px; border-bottom: 1px solid var(--gris-m);
+  gap: 10px; min-height: 52px;
+}
+.produit-row:last-child { border-bottom: none; }
+.produit-row:nth-child(even) { background: var(--gris-l); }
+
+.produit-info { flex: 1; }
+.produit-ref {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px; font-weight: 700;
+  color: var(--rouge); letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.produit-nom {
+  font-size: 13px; color: var(--gris);
+  line-height: 1.3; margin-top: 1px;
+}
+
+.produit-qty {
+  width: 90px; border: 2px solid var(--border);
+  border-radius: 8px; padding: 8px 6px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px; font-weight: 700;
+  text-align: center; outline: none; color: var(--gris);
+  transition: all 0.15s; background: #fff;
+  flex-shrink: 0;
+}
+.produit-qty:focus { border-color: var(--rouge); background: var(--rouge-l); }
+.produit-qty.filled { border-color: var(--vert); background: var(--vert-l); color: var(--vert); font-weight: 800; }
+
+/* SEND BAR */
+.send-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(10px);
+  border-top: 2px solid var(--gris-m);
+  z-index: 300;
+  display: flex; gap: 8px;
+}
+.send-btn {
+  flex: 1; padding: 14px 8px;
+  border: none; border-radius: 10px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px; font-weight: 800;
+  color: #fff; cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.send-btn:active { transform: scale(0.97); }
+.btn-mail { background: var(--rouge); box-shadow: 0 3px 12px rgba(212,43,43,0.3); }
+.btn-whatsapp { background: #25D366; box-shadow: 0 3px 12px rgba(37,211,102,0.3); }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 100px; left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--gris); color: #fff;
+  padding: 9px 18px; border-radius: 18px;
+  font-size: 13px; opacity: 0;
+  transition: all 0.25s; pointer-events: none;
+  white-space: nowrap; z-index: 400;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* RECAP COMPTEUR */
+.recap-bar {
+  background: var(--or-l); border-bottom: 2px solid var(--or);
+  padding: 6px 14px; font-size: 12px; font-weight: 600;
+  color: var(--or); text-align: center;
+  display: none;
+}
+.recap-bar.visible { display: block; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">CAUSSELEC <span>/ Dépôt</span></div>
+  <div class="header-sub">Commande Mathieu</div>
+</div>
+
+<div class="recap-bar" id="recapBar">0 article sélectionné</div>
+<div class="fam-bar" id="famBar"><button class="fam-btn active" id="fbtn-0">Capri</button><button class="fam-btn" id="fbtn-1">Câble</button><button class="fam-btn" id="fbtn-2">Connecteurs</button><button class="fam-btn" id="fbtn-3">Géfix</button><button class="fam-btn" id="fbtn-4">Gaines</button><button class="fam-btn" id="fbtn-5">Boîte étanche</button></div>
+<div class="content" id="mainContent"><div class="fam-content active" id="fam-0"><div class="produits-card"><div class="produits-header">Capri</div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">CAP491020</div>
+          <div class="produit-nom">Boîte de descente 20 (50/carton)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-0-0" data-fi="0" data-pi="0" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">CAP49100D</div>
+          <div class="produit-nom">Semelle verte (50/carton)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-0-1" data-fi="0" data-pi="1" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">CAP491950</div>
+          <div class="produit-nom">Pot individuel (50/carton)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-0-2" data-fi="0" data-pi="2" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">CAP493100</div>
+          <div class="produit-nom">Semelle blanche (50/carton)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-0-3" data-fi="0" data-pi="3" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">CAP599200</div>
+          <div class="produit-nom">Yellow 1 litre</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-0-4" data-fi="0" data-pi="4" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">CAP495889</div>
+          <div class="produit-nom">Pavillonnaire (10/carton)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-0-5" data-fi="0" data-pi="5" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">CAP491025</div>
+          <div class="produit-nom">Boîte de descente 25 (50/carton)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-0-6" data-fi="0" data-pi="6" placeholder="Qté">
+      </div><div style="padding: 10px 12px; background: rgb(255, 248, 220); border-top: 1px solid rgb(232, 208, 128);"><div style="font-size: 10px; font-weight: 700; color: rgb(200, 162, 0); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Lignes libres</div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-0-0-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-0-0-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-0-1-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-0-1-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-0-2-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-0-2-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-0-3-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-0-3-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-0-4-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-0-4-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div></div></div></div><div class="fam-content" id="fam-1"><div class="produits-card"><div class="produits-header">Câble</div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">ACOR7800D</div>
+          <div class="produit-nom">Grade 3 TV (500m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-0" data-fi="1" data-pi="0" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VU1,5RG</div>
+          <div class="produit-nom">Fil HO7 VU 1,5mm² rouge (4000m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-1" data-fi="1" data-pi="1" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VU1,5BE</div>
+          <div class="produit-nom">Fil HO7 VU 1,5mm² bleu (4000m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-2" data-fi="1" data-pi="2" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VU1,5VJ</div>
+          <div class="produit-nom">Fil HO7 VU 1,5mm² vert/jaune (4000m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-3" data-fi="1" data-pi="3" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VU1,5OR</div>
+          <div class="produit-nom">Fil HO7 VU 1,5mm² orange (4000m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-4" data-fi="1" data-pi="4" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VU1,5VI</div>
+          <div class="produit-nom">Fil HO7 VU 1,5mm² violet (4000m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-5" data-fi="1" data-pi="5" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VU1,5NR</div>
+          <div class="produit-nom">Fil HO7 VU 1,5mm² noir (4000m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-6" data-fi="1" data-pi="6" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VU1,5BE RAL5010</div>
+          <div class="produit-nom">Fil HO7 VU 1,5mm² bleu RAL5010 (4000m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-7" data-fi="1" data-pi="7" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VU2,5RG</div>
+          <div class="produit-nom">Fil HO7 VU 2,5mm² rouge (2500m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-8" data-fi="1" data-pi="8" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VU2,5BE</div>
+          <div class="produit-nom">Fil HO7 VU 2,5mm² bleu (2500m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-9" data-fi="1" data-pi="9" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VU2,5VJ</div>
+          <div class="produit-nom">Fil HO7 VU 2,5mm² vert/jaune (2500m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-10" data-fi="1" data-pi="10" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VU2,5MN</div>
+          <div class="produit-nom">Fil HO7 VU 2,5mm² marron (2500m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-11" data-fi="1" data-pi="11" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VR6RG</div>
+          <div class="produit-nom">Fil HO7 VR 6mm² rouge (500m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-12" data-fi="1" data-pi="12" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VR6BE</div>
+          <div class="produit-nom">Fil HO7 VR 6mm² bleu (500m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-13" data-fi="1" data-pi="13" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VR6VJ</div>
+          <div class="produit-nom">Fil HO7 VR 6mm² vert/jaune (500m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-14" data-fi="1" data-pi="14" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VAR16R</div>
+          <div class="produit-nom">Fil alu 16mm² rouge (500m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-15" data-fi="1" data-pi="15" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VAR16B</div>
+          <div class="produit-nom">Fil alu 16mm² bleu (500m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-16" data-fi="1" data-pi="16" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VAR16VJ</div>
+          <div class="produit-nom">Fil alu 16mm² vert/jaune (500m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-17" data-fi="1" data-pi="17" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VAR25R</div>
+          <div class="produit-nom">Fil alu 25mm² rouge (500m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-18" data-fi="1" data-pi="18" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VAR25B</div>
+          <div class="produit-nom">Fil alu 25mm² bleu (500m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-19" data-fi="1" data-pi="19" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VAR35R</div>
+          <div class="produit-nom">Fil alu 35mm² rouge (500m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-20" data-fi="1" data-pi="20" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VAR35B</div>
+          <div class="produit-nom">Fil alu 35mm² bleu (500m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-21" data-fi="1" data-pi="21" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">H07VAR35VJ</div>
+          <div class="produit-nom">Fil alu 35mm² vert/jaune (500m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-22" data-fi="1" data-pi="22" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">RO2V3G1,5</div>
+          <div class="produit-nom">U1000 RO2V 3G1,5mm²</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-23" data-fi="1" data-pi="23" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">RO2V3G2,5</div>
+          <div class="produit-nom">U1000 RO2V 3G2,5mm²</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-24" data-fi="1" data-pi="24" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">17VATCA</div>
+          <div class="produit-nom">COAX 17dB 75OHMS PVC BLANC (500m)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-25" data-fi="1" data-pi="25" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">SYT1-2P</div>
+          <div class="produit-nom">SYT1 CCA 2PAWG20</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-26" data-fi="1" data-pi="26" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">SYT1-3P</div>
+          <div class="produit-nom">SYT1 3PAWG20</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-27" data-fi="1" data-pi="27" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">SYT1-5P</div>
+          <div class="produit-nom">SYT1 CCA 5PAWG20</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-1-28" data-fi="1" data-pi="28" placeholder="Qté">
+      </div><div style="padding: 10px 12px; background: rgb(255, 248, 220); border-top: 1px solid rgb(232, 208, 128);"><div style="font-size: 10px; font-weight: 700; color: rgb(200, 162, 0); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Lignes libres</div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-1-0-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-1-0-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-1-1-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-1-1-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-1-2-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-1-2-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-1-3-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-1-3-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-1-4-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-1-4-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div></div></div></div><div class="fam-content" id="fam-2"><div class="produits-card"><div class="produits-header">Connecteurs</div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">460020</div>
+          <div class="produit-nom">2 entrées</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-2-0" data-fi="2" data-pi="0" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">460030</div>
+          <div class="produit-nom">3 entrées</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-2-1" data-fi="2" data-pi="1" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">460012</div>
+          <div class="produit-nom">12 entrées</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-2-2" data-fi="2" data-pi="2" placeholder="Qté">
+      </div><div style="padding: 10px 12px; background: rgb(255, 248, 220); border-top: 1px solid rgb(232, 208, 128);"><div style="font-size: 10px; font-weight: 700; color: rgb(200, 162, 0); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Lignes libres</div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-2-0-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-2-0-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-2-1-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-2-1-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-2-2-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-2-2-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-2-3-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-2-3-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-2-4-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-2-4-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div></div></div></div><div class="fam-content" id="fam-3"><div class="produits-card"><div class="produits-header">Géfix</div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">X0381011</div>
+          <div class="produit-nom">Mastic sanitaire neutre anti moisissures (carton 24)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-0" data-fi="3" data-pi="0" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">X0321011</div>
+          <div class="produit-nom">Mastic acrylique blanc (carton 24)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-1" data-fi="3" data-pi="1" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">X0121011</div>
+          <div class="produit-nom">Mastic colle polyuréthane (carton 24)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-2" data-fi="3" data-pi="2" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">X0657001</div>
+          <div class="produit-nom">Mousse expansive coupe-feu 750ml (carton 12)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-3" data-fi="3" data-pi="3" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">X0625001</div>
+          <div class="produit-nom">Lot 12 mousse PU 500ml</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-4" data-fi="3" data-pi="4" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">V106100</div>
+          <div class="produit-nom">Collier noir double serrage 183x9</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-5" data-fi="3" data-pi="5" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">V106145</div>
+          <div class="produit-nom">Collier noir double serrage 300x9</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-6" data-fi="3" data-pi="6" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">V106190</div>
+          <div class="produit-nom">Collier noir double serrage 360x9</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-7" data-fi="3" data-pi="7" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">V103080</div>
+          <div class="produit-nom">Collier noir 4,7x160</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-8" data-fi="3" data-pi="8" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">V103100</div>
+          <div class="produit-nom">Collier noir 4,7x200</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-9" data-fi="3" data-pi="9" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">V103185</div>
+          <div class="produit-nom">Collier noir 4,7x360</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-10" data-fi="3" data-pi="10" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">V121014</div>
+          <div class="produit-nom">Collier et cheville tube IRL</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-11" data-fi="3" data-pi="11" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">V115012</div>
+          <div class="produit-nom">Cheville standard collier câblage à frapper</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-12" data-fi="3" data-pi="12" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">V115020</div>
+          <div class="produit-nom">Embase à visser</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-13" data-fi="3" data-pi="13" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">S601215</div>
+          <div class="produit-nom">Cheville frapper légère 5x30 (boite 200)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-14" data-fi="3" data-pi="14" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">S561222</div>
+          <div class="produit-nom">Cheville métallique plaque de plâtre HW 5x13 (boite 100)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-15" data-fi="3" data-pi="15" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">S515060</div>
+          <div class="produit-nom">Cheville placo métal 12x35</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-16" data-fi="3" data-pi="16" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">S515032</div>
+          <div class="produit-nom">Cheville Spit mini Driva</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-17" data-fi="3" data-pi="17" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">V311251</div>
+          <div class="produit-nom">Bande à clouer 17mm x 25m</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-18" data-fi="3" data-pi="18" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">T011622</div>
+          <div class="produit-nom">Vis Bois TX 5x45 (boite 100)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-19" data-fi="3" data-pi="19" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">R031104-9</div>
+          <div class="produit-nom">Gant polyester coton tricoté taille 9 (paquet 10)</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-20" data-fi="3" data-pi="20" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">E073052</div>
+          <div class="produit-nom">Foret béton SDS+ 5x161</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-21" data-fi="3" data-pi="21" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">D132412</div>
+          <div class="produit-nom">Disque diamant 125mm</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-22" data-fi="3" data-pi="22" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">E702116</div>
+          <div class="produit-nom">Lot 5 disques tronçonner métaux 125</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-23" data-fi="3" data-pi="23" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">E702212</div>
+          <div class="produit-nom">Disque tronçonner métaux 230/2</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-24" data-fi="3" data-pi="24" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">X251507B1</div>
+          <div class="produit-nom">Scotch Barnier Orange multi usage</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-25" data-fi="3" data-pi="25" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">G651012</div>
+          <div class="produit-nom">Lot 12 crayons</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-26" data-fi="3" data-pi="26" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">G671103</div>
+          <div class="produit-nom">Marqueur indélébile</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-27" data-fi="3" data-pi="27" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">KITCHANTIER1</div>
+          <div class="produit-nom">Kit scellement chimique</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-3-28" data-fi="3" data-pi="28" placeholder="Qté">
+      </div><div style="padding: 10px 12px; background: rgb(255, 248, 220); border-top: 1px solid rgb(232, 208, 128);"><div style="font-size: 10px; font-weight: 700; color: rgb(200, 162, 0); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Lignes libres</div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-3-0-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-3-0-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-3-1-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-3-1-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-3-2-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-3-2-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-3-3-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-3-3-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-3-4-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-3-4-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div></div></div></div><div class="fam-content" id="fam-4"><div class="produits-card"><div class="produits-header">Gaines</div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">ICTA20GL</div>
+          <div class="produit-nom">ICTA 20 Grande longueur</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-4-0" data-fi="4" data-pi="0" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">ICTA25GL</div>
+          <div class="produit-nom">ICTA 25 Grande longueur</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-4-1" data-fi="4" data-pi="1" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">ICTA40GL</div>
+          <div class="produit-nom">ICTA 40 Grande longueur</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-4-2" data-fi="4" data-pi="2" placeholder="Qté">
+      </div><div style="padding: 10px 12px; background: rgb(255, 248, 220); border-top: 1px solid rgb(232, 208, 128);"><div style="font-size: 10px; font-weight: 700; color: rgb(200, 162, 0); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Lignes libres</div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-4-0-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-4-0-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-4-1-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-4-1-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-4-2-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-4-2-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-4-3-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-4-3-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-4-4-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-4-4-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div></div></div></div><div class="fam-content" id="fam-5"><div class="produits-card"><div class="produits-header">Boîte étanche</div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">560409</div>
+          <div class="produit-nom">Boite étanche 100x100</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-5-0" data-fi="5" data-pi="0" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">515309</div>
+          <div class="produit-nom">Boite étanche 80x80</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-5-1" data-fi="5" data-pi="1" placeholder="Qté">
+      </div><div class="produit-row">
+        <div class="produit-info">
+          <div class="produit-ref">515209</div>
+          <div class="produit-nom">Boite étanche diam 80</div>
+        </div>
+        <input type="text" class="produit-qty" id="qty-5-2" data-fi="5" data-pi="2" placeholder="Qté">
+      </div><div style="padding: 10px 12px; background: rgb(255, 248, 220); border-top: 1px solid rgb(232, 208, 128);"><div style="font-size: 10px; font-weight: 700; color: rgb(200, 162, 0); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Lignes libres</div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-5-0-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-5-0-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-5-1-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-5-1-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-5-2-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-5-2-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-5-3-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-5-3-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div><div style="display: flex; gap: 8px; margin-bottom: 6px;"><input type="text" placeholder="Produit..." id="ll-5-4-p" style="flex: 3 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: Barlow, sans-serif; outline: none;"><input type="text" placeholder="Qté" id="ll-5-4-q" style="flex: 1 1 0%; border: 1px solid rgb(221, 221, 221); border-radius: 6px; padding: 8px; font-size: 13px; font-family: &quot;Barlow Condensed&quot;, sans-serif; font-weight: 700; text-align: center; outline: none;"></div></div></div></div></div>
+
+<div class="send-bar">
+  <button class="send-btn btn-mail" onclick="sendMail()">✉ Mail</button>
+  <button class="send-btn btn-whatsapp" onclick="sendWhatsapp()">📱 WhatsApp</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const WA_NUMBER = "33604516977"; // Laurent Mendez
+
+const PRODUITS = {
+  "Capri": [
+    { ref: "CAP491020", nom: "Boîte de descente 20 (50/carton)" },
+    { ref: "CAP49100D", nom: "Semelle verte (50/carton)" },
+    { ref: "CAP491950", nom: "Pot individuel (50/carton)" },
+    { ref: "CAP493100", nom: "Semelle blanche (50/carton)" },
+    { ref: "CAP599200", nom: "Yellow 1 litre" },
+    { ref: "CAP495889", nom: "Pavillonnaire (10/carton)" },
+    { ref: "CAP491025", nom: "Boîte de descente 25 (50/carton)" },
+  ],
+  "Câble": [
+    { ref: "ACOR7800D", nom: "Grade 3 TV (500m)" },
+    { ref: "H07VU1,5RG", nom: "Fil HO7 VU 1,5mm² rouge (4000m)" },
+    { ref: "H07VU1,5BE", nom: "Fil HO7 VU 1,5mm² bleu (4000m)" },
+    { ref: "H07VU1,5VJ", nom: "Fil HO7 VU 1,5mm² vert/jaune (4000m)" },
+    { ref: "H07VU1,5OR", nom: "Fil HO7 VU 1,5mm² orange (4000m)" },
+    { ref: "H07VU1,5VI", nom: "Fil HO7 VU 1,5mm² violet (4000m)" },
+    { ref: "H07VU1,5NR", nom: "Fil HO7 VU 1,5mm² noir (4000m)" },
+    { ref: "H07VU1,5BE RAL5010", nom: "Fil HO7 VU 1,5mm² bleu RAL5010 (4000m)" },
+    { ref: "H07VU2,5RG", nom: "Fil HO7 VU 2,5mm² rouge (2500m)" },
+    { ref: "H07VU2,5BE", nom: "Fil HO7 VU 2,5mm² bleu (2500m)" },
+    { ref: "H07VU2,5VJ", nom: "Fil HO7 VU 2,5mm² vert/jaune (2500m)" },
+    { ref: "H07VU2,5MN", nom: "Fil HO7 VU 2,5mm² marron (2500m)" },
+    { ref: "H07VR6RG", nom: "Fil HO7 VR 6mm² rouge (500m)" },
+    { ref: "H07VR6BE", nom: "Fil HO7 VR 6mm² bleu (500m)" },
+    { ref: "H07VR6VJ", nom: "Fil HO7 VR 6mm² vert/jaune (500m)" },
+    { ref: "H07VAR16R", nom: "Fil alu 16mm² rouge (500m)" },
+    { ref: "H07VAR16B", nom: "Fil alu 16mm² bleu (500m)" },
+    { ref: "H07VAR16VJ", nom: "Fil alu 16mm² vert/jaune (500m)" },
+    { ref: "H07VAR25R", nom: "Fil alu 25mm² rouge (500m)" },
+    { ref: "H07VAR25B", nom: "Fil alu 25mm² bleu (500m)" },
+    { ref: "H07VAR35R", nom: "Fil alu 35mm² rouge (500m)" },
+    { ref: "H07VAR35B", nom: "Fil alu 35mm² bleu (500m)" },
+    { ref: "H07VAR35VJ", nom: "Fil alu 35mm² vert/jaune (500m)" },
+    { ref: "RO2V3G1,5", nom: "U1000 RO2V 3G1,5mm²" },
+    { ref: "RO2V3G2,5", nom: "U1000 RO2V 3G2,5mm²" },
+    { ref: "17VATCA", nom: "COAX 17dB 75OHMS PVC BLANC (500m)" },
+    { ref: "SYT1-2P", nom: "SYT1 CCA 2PAWG20" },
+    { ref: "SYT1-3P", nom: "SYT1 3PAWG20" },
+    { ref: "SYT1-5P", nom: "SYT1 CCA 5PAWG20" },
+  ],
+  "Connecteurs": [
+    { ref: "460020", nom: "2 entrées" },
+    { ref: "460030", nom: "3 entrées" },
+    { ref: "460012", nom: "12 entrées" },
+  ],
+  "Géfix": [
+    { ref: "X0381011", nom: "Mastic sanitaire neutre anti moisissures (carton 24)" },
+    { ref: "X0321011", nom: "Mastic acrylique blanc (carton 24)" },
+    { ref: "X0121011", nom: "Mastic colle polyuréthane (carton 24)" },
+    { ref: "X0657001", nom: "Mousse expansive coupe-feu 750ml (carton 12)" },
+    { ref: "X0625001", nom: "Lot 12 mousse PU 500ml" },
+    { ref: "V106100", nom: "Collier noir double serrage 183x9" },
+    { ref: "V106145", nom: "Collier noir double serrage 300x9" },
+    { ref: "V106190", nom: "Collier noir double serrage 360x9" },
+    { ref: "V103080", nom: "Collier noir 4,7x160" },
+    { ref: "V103100", nom: "Collier noir 4,7x200" },
+    { ref: "V103185", nom: "Collier noir 4,7x360" },
+    { ref: "V121014", nom: "Collier et cheville tube IRL" },
+    { ref: "V115012", nom: "Cheville standard collier câblage à frapper" },
+    { ref: "V115020", nom: "Embase à visser" },
+    { ref: "S601215", nom: "Cheville frapper légère 5x30 (boite 200)" },
+    { ref: "S561222", nom: "Cheville métallique plaque de plâtre HW 5x13 (boite 100)" },
+    { ref: "S515060", nom: "Cheville placo métal 12x35" },
+    { ref: "S515032", nom: "Cheville Spit mini Driva" },
+    { ref: "V311251", nom: "Bande à clouer 17mm x 25m" },
+    { ref: "T011622", nom: "Vis Bois TX 5x45 (boite 100)" },
+    { ref: "R031104-9", nom: "Gant polyester coton tricoté taille 9 (paquet 10)" },
+    { ref: "E073052", nom: "Foret béton SDS+ 5x161" },
+    { ref: "D132412", nom: "Disque diamant 125mm" },
+    { ref: "E702116", nom: "Lot 5 disques tronçonner métaux 125" },
+    { ref: "E702212", nom: "Disque tronçonner métaux 230/2" },
+    { ref: "X251507B1", nom: "Scotch Barnier Orange multi usage" },
+    { ref: "G651012", nom: "Lot 12 crayons" },
+    { ref: "G671103", nom: "Marqueur indélébile" },
+    { ref: "KITCHANTIER1", nom: "Kit scellement chimique" },
+  ],
+  "Gaines": [
+    { ref: "ICTA20GL", nom: "ICTA 20 Grande longueur" },
+    { ref: "ICTA25GL", nom: "ICTA 25 Grande longueur" },
+    { ref: "ICTA40GL", nom: "ICTA 40 Grande longueur" },
+  ],
+  "Boîte étanche": [
+    { ref: "560409", nom: "Boite étanche 100x100" },
+    { ref: "515309", nom: "Boite étanche 80x80" },
+    { ref: "515209", nom: "Boite étanche diam 80" },
+  ],
+};
+
+// ── Build UI ──────────────────────────────────────────────────────────
+function buildAll() {
+  const bar = document.getElementById('famBar');
+  const content = document.getElementById('mainContent');
+  const familles = Object.keys(PRODUITS);
+
+  familles.forEach((fam, fi) => {
+    // Bouton famille
+    const btn = document.createElement('button');
+    btn.className = 'fam-btn' + (fi === 0 ? ' active' : '');
+    btn.id = `fbtn-${fi}`;
+    btn.textContent = fam;
+    btn.onclick = () => switchFam(fi);
+    bar.appendChild(btn);
+
+    // Contenu famille
+    const div = document.createElement('div');
+    div.className = 'fam-content' + (fi === 0 ? ' active' : '');
+    div.id = `fam-${fi}`;
+
+    const card = document.createElement('div');
+    card.className = 'produits-card';
+    card.innerHTML = `<div class="produits-header">${fam}</div>`;
+
+    PRODUITS[fam].forEach((prod, pi) => {
+      const row = document.createElement('div');
+      row.className = 'produit-row';
+      row.innerHTML = `
+        <div class="produit-info">
+          <div class="produit-ref">${prod.ref}</div>
+          <div class="produit-nom">${prod.nom}</div>
+        </div>
+        <input type="text" class="produit-qty"
+          id="qty-${fi}-${pi}"
+          data-fi="${fi}" data-pi="${pi}"
+          placeholder="Qté">
+      `;
+      card.appendChild(row);
+    });
+
+        // 5 lignes libres
+    const libresDiv = document.createElement('div');
+    libresDiv.style.cssText = 'padding:10px 12px;background:#FFF8DC;border-top:1px solid #E8D080;';
+    const titreLibres = document.createElement('div');
+    titreLibres.style.cssText = 'font-size:10px;font-weight:700;color:#C8A200;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px';
+    titreLibres.textContent = 'Lignes libres';
+    libresDiv.appendChild(titreLibres);
+    for (let l = 0; l < 5; l++) {
+      const ligne = document.createElement('div');
+      ligne.style.cssText = 'display:flex;gap:8px;margin-bottom:6px;';
+      const ip = document.createElement('input');
+      ip.type = 'text'; ip.placeholder = 'Produit...';
+      ip.id = 'll-' + fi + '-' + l + '-p';
+      ip.style.cssText = 'flex:3;border:1px solid #DDD;border-radius:6px;padding:8px;font-size:13px;font-family:Barlow,sans-serif;outline:none;';
+      const iq = document.createElement('input');
+      iq.type = 'text'; iq.placeholder = 'Qté';
+      iq.id = 'll-' + fi + '-' + l + '-q';
+      iq.style.cssText = 'flex:1;border:1px solid #DDD;border-radius:6px;padding:8px;font-size:13px;font-family:Barlow Condensed,sans-serif;font-weight:700;text-align:center;outline:none;';
+      ligne.appendChild(ip);
+      ligne.appendChild(iq);
+      libresDiv.appendChild(ligne);
+    }
+    card.appendChild(libresDiv);
+    div.appendChild(card);
+    content.appendChild(div);
+  });
+
+  // Listeners quantités
+  document.querySelectorAll('.produit-qty').forEach(inp => {
+    inp.addEventListener('input', () => {
+      inp.classList.toggle('filled', inp.value.trim() !== '');
+      updateFamIndicator(inp.dataset.fi);
+      updateRecap();
+    });
+  });
+}
+
+function switchFam(fi) {
+  document.querySelectorAll('.fam-content').forEach(f => f.classList.remove('active'));
+  document.querySelectorAll('.fam-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`fam-${fi}`).classList.add('active');
+  document.getElementById(`fbtn-${fi}`).classList.add('active');
+}
+
+function updateFamIndicator(fi) {
+  const familles = Object.keys(PRODUITS);
+  const btn = document.getElementById(`fbtn-${fi}`);
+  const prods = PRODUITS[familles[fi]];
+  const hasData = prods.some((_, pi) => {
+    const el = document.getElementById(`qty-${fi}-${pi}`);
+    return el && el.value.trim() !== '';
+  });
+  btn.classList.toggle('has-data', hasData);
+}
+
+function updateRecap() {
+  const familles = Object.keys(PRODUITS);
+  let total = 0;
+  familles.forEach((fam, fi) => {
+    PRODUITS[fam].forEach((_, pi) => {
+      const el = document.getElementById(`qty-${fi}-${pi}`);
+      if (el && el.value.trim() !== '') total++;
+    });
+  });
+  const bar = document.getElementById('recapBar');
+  bar.textContent = total === 0 ? '0 article sélectionné' : `${total} article${total > 1 ? 's' : ''} sélectionné${total > 1 ? 's' : ''}`;
+  bar.classList.toggle('visible', total > 0);
+}
+
+// ── Collecte ──────────────────────────────────────────────────────────
+function collectCommande() {
+  const familles = Object.keys(PRODUITS);
+  const lignes = [];
+  familles.forEach((fam, fi) => {
+    const items = [];
+    PRODUITS[fam].forEach((prod, pi) => {
+      const el = document.getElementById(`qty-${fi}-${pi}`);
+      if (el && el.value.trim()) {
+        items.push({ ref: prod.ref, nom: prod.nom, qty: el.value.trim() });
+      }
+    });
+    // Lignes libres
+    for (let l = 0; l < 5; l++) {
+      const p = document.getElementById(`ll-${fi}-${l}-p`);
+      const q = document.getElementById(`ll-${fi}-${l}-q`);
+      if (p && p.value.trim()) {
+        items.push({ ref: '—', nom: p.value.trim(), qty: q ? q.value.trim() || '?' : '?' });
+      }
+    }
+    if (items.length) lignes.push({ fam, items });
+  });
+  return lignes;
+}
+
+function buildTexte() {
+  const lignes = collectCommande();
+  if (!lignes.length) return null;
+
+  let txt = "COMMANDE MATHIEU — CAUSSELEC\n";
+  txt += "═".repeat(35) + "\n";
+  txt += `Date : ${new Date().toLocaleDateString('fr-FR')}\n\n`;
+
+  lignes.forEach(({ fam, items }) => {
+    txt += `[ ${fam} ]\n`;
+    items.forEach(({ ref, nom, qty }) => {
+      txt += `  • ${ref} — ${nom} : ${qty}\n`;
+    });
+    txt += "\n";
+  });
+
+  const total = lignes.reduce((s, l) => s + l.items.length, 0);
+  txt += `─────────────────────────────────\n`;
+  txt += `Total : ${total} référence${total > 1 ? 's' : ''}\n`;
+  return txt;
+}
+
+// ── Envoi ─────────────────────────────────────────────────────────────
+function sendMail() {
+  const txt = buildTexte();
+  if (!txt) { showToast("⚠ Aucun article sélectionné"); return; }
+  const subject = `Commande Mathieu — ${new Date().toLocaleDateString('fr-FR')}`;
+  window.location.href = `mailto:laurent.mendez.pro@outlook.fr?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(txt)}`;
+  showToast("✅ Ouverture messagerie...");
+}
+
+function sendWhatsapp() {
+  const txt = buildTexte();
+  if (!txt) { showToast("⚠ Aucun article sélectionné"); return; }
+  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(txt)}`, '_blank');
+  showToast("✅ Ouverture WhatsApp...");
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────
+buildAll();
+</script>
+
+
+</body></html>
