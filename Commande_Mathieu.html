@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -227,6 +228,9 @@ const PRODUITS = {
     { ref: "460020", nom: "2 entrées" },
     { ref: "460030", nom: "3 entrées" },
     { ref: "460012", nom: "12 entrées" },
+    { ref: "460040", nom: "4 entrées" },
+    { ref: "460050", nom: "5 entrées" },
+    { ref: "460080", nom: "8 entrées" },
   ],
   "Géfix": [
     { ref: "X0381011", nom: "Mastic sanitaire neutre anti moisissures (carton 24)" },
@@ -263,6 +267,16 @@ const PRODUITS = {
     { ref: "ICTA20GL", nom: "ICTA 20 Grande longueur" },
     { ref: "ICTA25GL", nom: "ICTA 25 Grande longueur" },
     { ref: "ICTA40GL", nom: "ICTA 40 Grande longueur" },
+  ],
+  "BLM": [
+    { ref: "690200", nom: "Bouchon étanche No Air ICTA 20" },
+    { ref: "690250", nom: "Bouchon étanche No Air ICTA 25" },
+    { ref: "625210", nom: "Clips tube 25" },
+    { ref: "620160", nom: "Clips tube 20" },
+    { ref: "590250", nom: "Boite pavillonnaire No Air BBC 250x250x85" },
+    { ref: "5901800", nom: "Boite pavillonnaire No Air BBC 180x180x85" },
+    { ref: "590188", nom: "Boite pavillonnaire No Air 180x180 sortie 86mm" },
+    { ref: "757400", nom: "Kit finition diam 120" },
   ],
   "Boîte étanche": [
     { ref: "560409", nom: "Boite étanche 100x100" },
@@ -432,7 +446,7 @@ function sendMail() {
   const txt = buildTexte();
   if (!txt) { showToast("⚠ Aucun article sélectionné"); return; }
   const subject = `Commande Mathieu — ${new Date().toLocaleDateString('fr-FR')}`;
-  window.location.href = `mailto:laurent.mendez.pro@outlook.fr?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(txt)}`;
+  window.location.href = `mailto:commande.causselec@groupe-llari.fr?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(txt)}`;
   showToast("✅ Ouverture messagerie...");
 }
 
@@ -455,3 +469,6 @@ buildAll();
 </script>
 </body>
 </html>
+
+
+
