@@ -269,6 +269,29 @@ const PRODUITS = {
     { ref: "V271178", nom: "Raccord de réduction Male 7x150 / Femelle 8x125" },
     { ref: "T011615", nom: "Vis agglo 5x30" },
     { ref: "X0091011", nom: "Lot 12 Mastic MS Instant 3S Turbo blanc" },
+    { ref: "V108000", nom: "Pince colson" },
+    { ref: "T011617", nom: "Vis Agglo 5x35" },
+  ],
+  "Modulaire": [
+    { ref: "", nom: "Coffret 2 RG" },
+    { ref: "", nom: "Coffret 3 RG" },
+    { ref: "", nom: "Coffret 4 RG" },
+    { ref: "", nom: "Porte 2 RG" },
+    { ref: "", nom: "Porte 3 RG" },
+    { ref: "", nom: "Porte 4 RG" },
+    { ref: "", nom: "Disj 2A" },
+    { ref: "", nom: "Disj 10A" },
+    { ref: "", nom: "Disj 16A" },
+    { ref: "", nom: "Disj 20A" },
+    { ref: "", nom: "Disj 32A" },
+    { ref: "", nom: "ID 2x63A type A" },
+    { ref: "", nom: "ID 2x63A type AC" },
+    { ref: "", nom: "Rail modulaire" },
+    { ref: "", nom: "Rail V 2RG" },
+    { ref: "", nom: "Rail V 3RG" },
+    { ref: "", nom: "Rail V 4RG" },
+    { ref: "", nom: "Contacteur J/N" },
+    { ref: "", nom: "Télérupteur silencieux" },
   ],
   "Gaines": [
     { ref: "ICTA20GL", nom: "ICTA 20 Grande longueur" },
@@ -327,7 +350,7 @@ function buildAll() {
       row.className = 'produit-row';
       row.innerHTML = `
         <div class="produit-info">
-          <div class="produit-ref">${prod.ref}</div>
+          ${prod.ref ? `<div class="produit-ref">${prod.ref}</div>` : ''}
           <div class="produit-nom">${prod.nom}</div>
         </div>
         <input type="text" class="produit-qty"
@@ -443,7 +466,7 @@ function buildTexte() {
   lignes.forEach(({ fam, items }) => {
     txt += `[ ${fam} ]\n`;
     items.forEach(({ ref, nom, qty }) => {
-      txt += `  • ${ref} — ${nom} : ${qty}\n`;
+      txt += `  • ${ref ? ref + ' — ' : ''}${nom} : ${qty}\n`;
     });
     txt += "\n";
   });
